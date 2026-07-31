@@ -18,12 +18,17 @@ export const metadata = {
   },
   description: "Helping teachers mark student work faster.",
   manifest: "/manifest.webmanifest",
-  themeColor: "#2563eb",
   icons:{
     icon:"/icon-192.png",
     apple:"/apple-touch-icon.png"
   }
 };
+
+export const viewport = {
+  themeColor: "#2563eb",
+};
+
+
 
 export default function RootLayout({ children }) {
   return (
