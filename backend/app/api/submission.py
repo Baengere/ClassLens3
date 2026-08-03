@@ -5,6 +5,8 @@ from app.services.submission_service import get_submissions, update_teacher_mark
 from app.services.submission_service import create_submission
 from app.services.submission_service import get_submission
 from sqlalchemy.orm import Session
+from app.processing.grading import grade_submission
+
 
 router = APIRouter(
     prefix="/submissions",
@@ -24,22 +26,12 @@ async def create_new_submission(
     image:UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    #Create Uploads folder if needed
-    import os
-    import uuid
+    
 
-    os.makedirs("uploads", exist_ok=True)
-
-    filename = f"{uuid.uuid4()}.jpg"
-    filepath = os.path.join("uploads", filename)
-
-    with open(filepath, "wb") as buffer:
-        buffer.write(await image.read())
-
-    submission = create_submission(
+    submission = grade_submission(
         db=db,
-        question_id =question_id,
-        image_path=filepath
+        question_id=question_id,
+        image=image
     )
     return submission
 
