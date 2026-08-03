@@ -1,42 +1,93 @@
-import AssignmentForm from "./components/AssignmentForm"
+import AssignmentForm from "./components/forms/AssignmentForm";
 import Link from "next/link";
+import AppHeader from "./components/layout/AppHeader";
+import PageContainer from "./components/layout/PageContainer";
+import HeroCard from "./components/dashboard/HeroCard";
+import Card from "./components/ui/Card";
+import SectionTitle from "./components/ui/SectionTitle";
 
 
+export default async function Home() {
+  
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/assignments/`,
+    {
+      cache: "no-store",
+    }
+  );
 
-export default async function Home(){
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/assignments/`,{
-    cache: "no-store",
-  });
+  const assignments = await response.json();
 
-  const assignments = await response.json()
+  return(
 
-  return (
-    <main className="max-w-3xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">ClassLens3</h1>
+    <PageContainer>
 
-      <AssignmentForm/>
-      
-      <h2 className="text-xl font-semibold mb-4"> My Assignments</h2>
+      <AppHeader/>
+
+      <HeroCard assignment={assignments[0]}/>
+
+      <SectionTitle>
+        Recent Assignments
+      </SectionTitle>
 
       {assignments.length === 0 ? (
-        <p>No assignments yet.</p>
+        <Card>
+          <p className="text-slate-500 text-center">
+            No assignments yet.
+          </p>
+        </Card>
       ):(
-        <ul className="space-y-3">
+        <div className="space-y-5 mb-10">
+
           {assignments.map((assignment)=>(
-            <li key={assignment.id} className="border rounded-lg p-4">
-              <h3 className="font-semibold">{assignment.title}</h3>
-              <p>{assignment.subject}</p>
-              {assignment.description && (
-                <p className="text-gray-500">{assignment.description}</p>
-              )}
-              <Link
-                href={`/assignments/${assignment.id}`}
-                className="inline-block mt-3 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              >Open</Link>
-            </li>
+
+            <Card key={assignment.id}>
+
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <h3 className="text-xl font-semibold">
+                    {assignment.title}
+                  </h3>
+
+                  <p className="mt-1 text-slate-500">
+                    {assignment.subject}
+                  </p>
+
+                  {assignment.description && (
+                    <p className="mt-3 text-slate-600">
+                      {assignment.description}
+                    </p>
+                  )}
+
+                </div>
+
+                <Link href={`/assignments/${assignment.id}`}
+                  className="rounded-xl bg-blue-600 px-5 py-3 text-white hover:bg-blue-700">
+                    Open
+                </Link>
+
+              </div>
+
+            </Card>
+
           ))}
-        </ul>
+
+        </div>
+
       )}
-    </main>
+
+      <Card>
+
+        <SectionTitle>
+          Create New Assignment
+        </SectionTitle>
+
+        <AssignmentForm/>
+
+      </Card>
+
+    </PageContainer>
   )
 }
