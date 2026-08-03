@@ -13,7 +13,7 @@ export default function HeroCard({assignment}){
             <h2 className="mt-3 text-3xl font-bold">{assignment.title}</h2>
 
             <Link
-                href={`/assignment/${assignment.id}`}
+                href={`/assignments/${assignment.id}`}
                 className="mt-8 inline-block rounded-xl bg-white px-6 py-3 font-semiblod text-blue-600"
             >
                 Continue →
